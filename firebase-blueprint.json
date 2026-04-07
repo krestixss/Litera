@@ -1,0 +1,91 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Public profile of a user",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "email": { "type": "string" },
+        "bannerURL": { "type": "string" },
+        "bannerColor": { "type": "string" },
+        "verifiedStatus": { 
+          "type": "integer",
+          "description": "0: No checkmark, 1: Checkmark. Immutable by user."
+        }
+      },
+      "required": ["uid", "displayName", "email"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "A chat message",
+      "type": "object",
+      "properties": {
+        "text": { "type": "string" },
+        "uid": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["text", "uid", "createdAt"]
+    },
+    "Session": {
+      "title": "Session",
+      "description": "A user login session",
+      "type": "object",
+      "properties": {
+        "sessionId": { "type": "string" },
+        "uid": { "type": "string" },
+        "deviceName": { "type": "string" },
+        "userAgent": { "type": "string" },
+        "isPrimary": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "lastActive": { "type": "string", "format": "date-time" }
+      },
+      "required": ["sessionId", "uid", "deviceName", "createdAt"]
+    },
+    "Call": {
+      "title": "Call",
+      "description": "A video/audio call session",
+      "type": "object",
+      "properties": {
+        "callerId": { "type": "string" },
+        "receiverId": { "type": "string" },
+        "status": { "type": "string", "enum": ["ringing", "active", "ended", "rejected"] },
+        "type": { "type": "string", "enum": ["audio", "video"] },
+        "offer": { "type": "object" },
+        "answer": { "type": "object" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["callerId", "receiverId", "status", "type", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profile data"
+    },
+    "/chats/{chatId}/messages/{messageId}": {
+      "schema": "Message",
+      "description": "Messages in a private chat"
+    },
+    "/sessions/{sessionId}": {
+      "schema": "Session",
+      "description": "User login sessions"
+    },
+    "/calls/{callId}": {
+      "schema": "Call",
+      "description": "Active and past call sessions"
+    },
+    "/calls/{callId}/callerCandidates/{id}": {
+      "schema": "object",
+      "description": "ICE candidates from the caller"
+    },
+    "/calls/{callId}/receiverCandidates/{id}": {
+      "schema": "object",
+      "description": "ICE candidates from the receiver"
+    }
+  }
+}
